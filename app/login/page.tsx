@@ -1,14 +1,10 @@
-import { login, signup } from "./actions";
+import LoginForm from "./login-form";
 
 export default function LoginPage() {
   return (
-    <form>
-      <label htmlFor="email">Email:</label>
-      <input id="email" name="email" type="email" required />
-      <label htmlFor="password">Password:</label>
-      <input id="password" name="password" type="password" required />
-      <button formAction={login}>Log in</button>
-      <button formAction={signup}>Sign up</button>
-    </form>
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-2xl font-bold mb-5">Log In</h1>
+      <LoginForm />
+    </div>
   );
 }
