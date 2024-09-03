@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
@@ -30,12 +30,12 @@ const LoginForm: React.FC = () => {
         // Check if email is confirmed
         if (data.user.email_confirmed_at) {
           // Email is confirmed, proceed with login
-          router.push('/dashboard'); // Redirect to dashboard or home page
+          router.push("/dashboard");
         } else {
           // Email is not confirmed
-          setError('Please confirm your email before logging in.');
+          setError("Please confirm your email before logging in.");
           // Optionally, offer to resend confirmation email
-          setMessage('Need a new confirmation email?');
+          setMessage("Need a new confirmation email?");
         }
       }
     } catch (error) {
@@ -46,13 +46,13 @@ const LoginForm: React.FC = () => {
   const handleResendConfirmation = async () => {
     try {
       const { error } = await supabase.auth.resend({
-        type: 'signup',
+        type: "signup",
         email: email,
       });
 
       if (error) throw error;
 
-      setMessage('Confirmation email resent. Please check your inbox.');
+      setMessage("Confirmation email resent. Please check your inbox.");
     } catch (error) {
       setError((error as Error).message);
     }
@@ -61,7 +61,10 @@ const LoginForm: React.FC = () => {
   return (
     <form onSubmit={handleLogin} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700"
+        >
           Email
         </label>
         <input
@@ -74,7 +77,10 @@ const LoginForm: React.FC = () => {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700"
+        >
           Password
         </label>
         <input
