@@ -1,7 +1,12 @@
 import { type NextRequest } from "next/server";
 import { updateSession } from "./utils/supabase/middleware";
+import { adminAuth } from "./utils/admin-auth";
 
 export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    return adminAuth(request);
+  }
+
   // update user's auth session
   return await updateSession(request);
 }
