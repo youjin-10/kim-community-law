@@ -1,12 +1,13 @@
-
 // app/admin/approve-lawyers/approval-list.tsx
-
 
 'use client'
 
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import LicenseViewer from './license-viewer';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 type Lawyer = {
   id: string;
@@ -37,38 +38,43 @@ export default function ApprovalList({ lawyers }: { lawyers: Lawyer[] }) {
   };
 
   return (
-    <div>
+    <div className="space-y-4">
       {pendingLawyers.length === 0 ? (
-        <p>No pending lawyers to approve.</p>
+        <p className="text-center text-gray-500">No pending lawyers to approve.</p>
       ) : (
-        <ul className="space-y-4">
-          {pendingLawyers.map((lawyer) => {
-            console.log('lawyer? ', lawyer)
-
-            return (
-                <li key={lawyer.id} className="border p-4 rounded-md">
-                    <p><strong>Nickname:</strong> {lawyer.nickname}</p>
-                    <p><strong>Email:</strong> {lawyer.email}</p>
-                    <LicenseViewer filePath={lawyer.license_file} />
-                    <div className="mt-2">
-                        <button
-                            onClick={() => handleApproval(lawyer.id, true)}
-                            className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
-                        >
-                            Approve
-                        </button>
-                        <button
-                            onClick={() => handleApproval(lawyer.id, false)}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        >
-                            Reject
-                        </button>
-                    </div>
-                </li>
-
-            )
-          })}
-        </ul>
+        pendingLawyers.map((lawyer) => (
+          <Card key={lawyer.id}>
+            <CardHeader>
+              <CardTitle>{lawyer.nickname}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-2">
+                <div>
+                  <Label>Email</Label>
+                  <p>{lawyer.email}</p>
+                </div>
+                <div>
+                  <Label>License</Label>
+                  <LicenseViewer filePath={lawyer.license_file} />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                onClick={() => handleApproval(lawyer.id, true)}
+                variant="default"
+              >
+                Approve
+              </Button>
+              <Button
+                onClick={() => handleApproval(lawyer.id, false)}
+                variant="destructive"
+              >
+                Reject
+              </Button>
+            </CardFooter>
+          </Card>
+        ))
       )}
     </div>
   );

@@ -1,41 +1,60 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const interviewReviewSchema = z.object({
+  companyName: z.string().min(1, "Company name is required"),
+  position: z.string().min(1, "Position is required"),
+  interviewDate: z.string().min(1, "Interview date is required"),
+  interviewDifficulty: z.number().min(1).max(5),
+  interviewExperience: z.number().min(1).max(5),
+  interviewOutcome: z.enum(["Accepted", "Rejected", "Pending", "Withdrew"]),
+  interviewProcess: z.string().optional(),
+  interviewQuestions: z.string().optional(),
+  advice: z.string().optional(),
+});
+
+type InterviewReviewFormData = z.infer<typeof interviewReviewSchema>;
 
 export default function InterviewReviewForm() {
-  const [companyName, setCompanyName] = useState("");
-  const [position, setPosition] = useState("");
-  const [interviewDate, setInterviewDate] = useState("");
-  const [interviewDifficulty, setInterviewDifficulty] = useState(3);
-  const [interviewExperience, setInterviewExperience] = useState(3);
-  const [interviewOutcome, setInterviewOutcome] = useState("Pending");
-  const [interviewProcess, setInterviewProcess] = useState("");
-  const [interviewQuestions, setInterviewQuestions] = useState("");
-  const [advice, setAdvice] = useState("");
-
   const router = useRouter();
+  const { control, handleSubmit, formState: { errors } } = useForm<InterviewReviewFormData>({
+    resolver: zodResolver(interviewReviewSchema),
+    defaultValues: {
+      interviewDifficulty: 3,
+      interviewExperience: 3,
+      interviewOutcome: "Pending",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: InterviewReviewFormData) => {
     const response = await fetch("/api/reviews/interview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        company_name: companyName,
-        position,
-        interview_date: interviewDate,
-        interview_difficulty: interviewDifficulty,
-        interview_experience: interviewExperience,
-        interview_outcome: interviewOutcome,
-        interview_process: interviewProcess,
-        interview_questions: interviewQuestions,
-        advice,
+        company_name: data.companyName,
+        position: data.position,
+        interview_date: data.interviewDate,
+        interview_difficulty: data.interviewDifficulty,
+        interview_experience: data.interviewExperience,
+        interview_outcome: data.interviewOutcome,
+        interview_process: data.interviewProcess,
+        interview_questions: data.interviewQuestions,
+        advice: data.advice,
       }),
     });
 
     if (response.ok) {
-      // router.push("/reviews");
       const result = await response.json();
       if (result.redirectTo) {
         router.push(result.redirectTo);
@@ -45,133 +64,120 @@ export default function InterviewReviewForm() {
     }
   };
 
+  const RatingSlider = ({ control, name, label }: { control: any; name: keyof InterviewReviewFormData; label: string }) => (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <>
+            <Slider
+              min={1}
+              max={5}
+              step={1}
+              value={[value]}
+              onValueChange={(values) => onChange(values[0])}
+            />
+            <div className="text-right">{value}/5</div>
+          </>
+        )}
+      />
+    </div>
+  );
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label
-          htmlFor="companyName"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Company Name
-        </label>
-        <input
-          type="text"
-          id="companyName"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
+    <Card className="max-w-2xl mx-auto mt-10">
+      <CardHeader>
+        <CardTitle>Submit Interview Review</CardTitle>
+      </CardHeader>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="companyName">Company Name</Label>
+            <Controller
+              name="companyName"
+              control={control}
+              render={({ field }) => <Input {...field} />}
+            />
+            {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
+          </div>
 
-      <div>
-        <label
-          htmlFor="position"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Position
-        </label>
-        <input
-          type="text"
-          id="position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="position">Position</Label>
+            <Controller
+              name="position"
+              control={control}
+              render={({ field }) => <Input {...field} />}
+            />
+            {errors.position && <p className="text-red-500 text-sm">{errors.position.message}</p>}
+          </div>
 
-      <div>
-        <label
-          htmlFor="interviewDate"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Interview Date
-        </label>
-        <input
-          type="date"
-          id="interviewDate"
-          value={interviewDate}
-          onChange={(e) => setInterviewDate(e.target.value)}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="interviewDate">Interview Date</Label>
+            <Controller
+              name="interviewDate"
+              control={control}
+              render={({ field }) => <Input type="date" {...field} />}
+            />
+            {errors.interviewDate && <p className="text-red-500 text-sm">{errors.interviewDate.message}</p>}
+          </div>
 
-      {/* Add similar input fields for interviewDifficulty and interviewExperience */}
+          <RatingSlider control={control} name="interviewDifficulty" label="Interview Difficulty" />
+          <RatingSlider control={control} name="interviewExperience" label="Interview Experience" />
 
-      <div>
-        <label
-          htmlFor="interviewOutcome"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Interview Outcome
-        </label>
-        <select
-          id="interviewOutcome"
-          value={interviewOutcome}
-          onChange={(e) => setInterviewOutcome(e.target.value)}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        >
-          <option value="Accepted">Accepted</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Pending">Pending</option>
-          <option value="Withdrew">Withdrew</option>
-        </select>
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="interviewOutcome">Interview Outcome</Label>
+            <Controller
+              name="interviewOutcome"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select outcome" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Accepted">Accepted</SelectItem>
+                    <SelectItem value="Rejected">Rejected</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="Withdrew">Withdrew</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
 
-      <div>
-        <label
-          htmlFor="interviewProcess"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Interview Process
-        </label>
-        <textarea
-          id="interviewProcess"
-          value={interviewProcess}
-          onChange={(e) => setInterviewProcess(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        ></textarea>
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="interviewProcess">Interview Process</Label>
+            <Controller
+              name="interviewProcess"
+              control={control}
+              render={({ field }) => <Textarea {...field} />}
+            />
+          </div>
 
-      <div>
-        <label
-          htmlFor="interviewQuestions"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Interview Questions
-        </label>
-        <textarea
-          id="interviewQuestions"
-          value={interviewQuestions}
-          onChange={(e) => setInterviewQuestions(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        ></textarea>
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="interviewQuestions">Interview Questions</Label>
+            <Controller
+              name="interviewQuestions"
+              control={control}
+              render={({ field }) => <Textarea {...field} />}
+            />
+          </div>
 
-      <div>
-        <label
-          htmlFor="advice"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Advice for Other Candidates
-        </label>
-        <textarea
-          id="advice"
-          value={advice}
-          onChange={(e) => setAdvice(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        ></textarea>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Submit Interview Review
-      </button>
-    </form>
+          <div className="space-y-2">
+            <Label htmlFor="advice">Advice for Other Candidates</Label>
+            <Controller
+              name="advice"
+              control={control}
+              render={({ field }) => <Textarea {...field} />}
+            />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full">Submit Interview Review</Button>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }

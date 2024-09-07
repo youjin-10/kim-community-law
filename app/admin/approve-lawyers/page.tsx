@@ -3,6 +3,17 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import ApprovalList from './approval-list';
 
+
+type PendingLawyer = {
+  id: string;
+  nickname: string;
+  license_file: string;
+  status: string;
+  users: {
+    email: string;
+  };
+};
+
 export default async function AdminApproveLawyersPage() {
   const supabase = createClient();
   
@@ -35,22 +46,28 @@ export default async function AdminApproveLawyersPage() {
         email
       )
     `)
-    .eq('status', 'pending');
+    .eq('status', 'pending')
+    .returns<PendingLawyer[]>();;
 
-    if (error) {
-        console.error('Error fetching pending lawyers:', error);
-        return <div>Error loading pending lawyers. Please try again later.</div>;
-      }
-    
 
+  if (error) {
+    console.error('Error fetching pending lawyers:', error);
+    return <div>Error loading pending lawyers. Please try again later.</div>;
+  }
 
   // Process the data to include email directly in the lawyer object
-  const processedLawyers = pendingLawyers?.map(lawyer => ({
-    ...lawyer,
-    email: lawyer.users[0].email || 'Email not available'
-  })) || [];
+  const processedLawyers = pendingLawyers?.map(lawyer => {
+    console.log('lawyer: ',lawyer)
+    const { id, nickname, license_file, status, users } = lawyer;
+    return {
+      id,
+      nickname,
+      license_file,
+      status,
+      email: users.email || 'Email not available'
+    }
+  }) || [];
 
-  console.log('Processed lawyers:', processedLawyers);
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">

@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import Link from 'next/link';
 
 interface Lawyer {
   id: string;
@@ -16,58 +17,36 @@ interface Lawyer {
 
 const AdminDashboard: React.FC = () => {
   const supabase = createClient();
-  const [pendingLawyers, setPendingLawyers] = useState<Lawyer[]>([]);
+  const [pendingLawyersCount, setPendingLawyersCount] = useState<number>(0);
 
   useEffect(() => {
-    fetchPendingLawyers();
+    fetchPendingLawyersCount();
   }, []);
 
-  const fetchPendingLawyers = async () => {
-    const { data, error } = await supabase
-      .from('lawyers')
-      .select('*')
+  const fetchPendingLawyersCount = async () => {
+    const { count, error } = await supabase
+      .from('lawyer_profiles')
+      .select('*', { count: 'exact', head: true })
       .eq('status', 'pending');
 
     if (error) {
-      console.error('Error fetching pending lawyers:', error);
+      console.error('Error fetching pending lawyers count:', error);
     } else {
-      setPendingLawyers(data || []);
-    }
-  };
-
-  const approveLawyer = async (id: string) => {
-    const { error } = await supabase
-      .from('lawyers')
-      .update({ status: 'approved' })
-      .eq('id', id);
-
-    if (error) {
-      console.error('Error approving lawyer:', error);
-    } else {
-      fetchPendingLawyers();
+      setPendingLawyersCount(count || 0);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-5">Admin Dashboard</h1>
-      <h2 className="text-xl font-semibold mb-3">Pending Approvals</h2>
-      <ul className="space-y-4">
-        {pendingLawyers.map((lawyer) => (
-          <li key={lawyer.id} className="border p-4 rounded-md">
-            <p><strong>Username:</strong> {lawyer.username}</p>
-            <p><strong>Email:</strong> {lawyer.email}</p>
-            <p><strong>Nickname:</strong> {lawyer.nickname}</p>
-            <p><strong>License File:</strong> {lawyer.license_file}</p>
-            <button
-              onClick={() => approveLawyer(lawyer.id)}
-              className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Approve
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="mb-5">
+        <p className="text-lg">
+          Pending Approvals: <span className="font-semibold">{pendingLawyersCount}</span>
+        </p>
+        <Link href="/admin/approve-lawyers" className="text-blue-600 hover:text-blue-800 underline">
+          Go to Approve Lawyers Page
+        </Link>
+      </div>
     </div>
   );
 };
