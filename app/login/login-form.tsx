@@ -3,6 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle } from "lucide-react"
 
 const supabase = createClient();
 
@@ -27,14 +32,10 @@ const LoginForm: React.FC = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Check if email is confirmed
         if (data.user.email_confirmed_at) {
-          // Email is confirmed, proceed with login
-          router.push('/dashboard'); // Redirect to dashboard or home page
+          router.push('/dashboard');
         } else {
-          // Email is not confirmed
           setError('Please confirm your email before logging in.');
-          // Optionally, offer to resend confirmation email
           setMessage('Need a new confirmation email?');
         }
       }
@@ -60,51 +61,53 @@ const LoginForm: React.FC = () => {
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
           id="email"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
         />
       </div>
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
           id="password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
         />
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      {message && (
-        <div>
-          <p className="text-blue-500">{message}</p>
-          <button
-            type="button"
-            onClick={handleResendConfirmation}
-            className="mt-2 text-indigo-600 hover:text-indigo-500"
-          >
-            Resend confirmation email
-          </button>
-        </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
-      <button
-        type="submit"
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
+      {message && (
+        <Alert>
+          <AlertTitle>Info</AlertTitle>
+          <AlertDescription>
+            {message}
+            {message.includes('confirmation email') && (
+              <Button
+                variant="link"
+                onClick={handleResendConfirmation}
+                className="p-0 h-auto font-normal text-blue-500 hover:text-blue-700"
+              >
+                Resend confirmation email
+              </Button>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
+      <Button type="submit" className="w-full">
         Log In
-      </button>
+      </Button>
     </form>
   );
 };
