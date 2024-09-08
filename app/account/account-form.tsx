@@ -36,60 +36,60 @@ export default function AccountForm({ user }: { user: User | null }) {
     },
   });
 
-  const getProfile = useCallback(async () => {
-    try {
-      setLoading(true);
+  // const getProfile = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
 
-      const { data, error, status } = await supabase
-        .from("profiles")
-        .select(`full_name, username, website, avatar_url`)
-        .eq("id", user?.id)
-        .single();
+  //     const { data, error, status } = await supabase
+  //       .from("profiles")
+  //       .select(`full_name, username, website, avatar_url`)
+  //       .eq("id", user?.id)
+  //       .single();
 
-      if (error && status !== 406) {
-        throw error;
-      }
+  //     if (error && status !== 406) {
+  //       throw error;
+  //     }
 
-      if (data) {
-        form.reset({
-          fullname: data.full_name || "",
-          username: data.username || "",
-          website: data.website || "",
-        });
-        setAvatarUrl(data.avatar_url);
-      }
-    } catch (error) {
-      alert("Error loading user data!");
-    } finally {
-      setLoading(false);
-    }
-  }, [user, supabase, form]);
+  //     if (data) {
+  //       form.reset({
+  //         fullname: data.full_name || "",
+  //         username: data.username || "",
+  //         website: data.website || "",
+  //       });
+  //       setAvatarUrl(data.avatar_url);
+  //     }
+  //   } catch (error) {
+  //     alert("Error loading user data!");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [user, supabase, form]);
 
-  useEffect(() => {
-    getProfile();
-  }, [user, getProfile]);
+  // useEffect(() => {
+  //   getProfile();
+  // }, [user, getProfile]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setLoading(true);
+  // async function onSubmit(values: z.infer<typeof formSchema>) {
+  //   try {
+  //     setLoading(true);
 
-      const { error } = await supabase.from("profiles").upsert({
-        id: user?.id as string,
-        full_name: values.fullname,
-        username: values.username,
-        website: values.website,
-        avatar_url,
-        updated_at: new Date().toISOString(),
-      });
+  //     const { error } = await supabase.from("profiles").upsert({
+  //       id: user?.id as string,
+  //       full_name: values.fullname,
+  //       username: values.username,
+  //       website: values.website,
+  //       avatar_url,
+  //       updated_at: new Date().toISOString(),
+  //     });
 
-      if (error) throw error;
-      alert("Profile updated!");
-    } catch (error) {
-      alert("Error updating the data!");
-    } finally {
-      setLoading(false);
-    }
-  }
+  //     if (error) throw error;
+  //     alert("Profile updated!");
+  //   } catch (error) {
+  //     alert("Error updating the data!");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   async function handleSignOut() {
     const { error } = await supabase.auth.signOut();
@@ -103,7 +103,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="fullname"
@@ -154,7 +154,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         <Button type="submit" disabled={loading}>
           {loading ? "Loading ..." : "Update"}
         </Button>
-      </form>
+      </form> */}
 
       <div className="mt-4">
         <Button type="button" variant="outline" onClick={handleSignOut}>
