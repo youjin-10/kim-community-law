@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
 
 const supabase = createClient();
 
@@ -17,10 +18,11 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,6 +35,7 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setError(null);
     setMessage(null);
+    setIsLoading(true);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -44,7 +47,7 @@ const LoginForm: React.FC = () => {
 
       if (data.user) {
         if (data.user.email_confirmed_at) {
-          router.push("/dashboard");
+          router.push(nextUrl);
         } else {
           setError("Please confirm your email before logging in.");
           setMessage("Need a new confirmation email?");
@@ -52,6 +55,8 @@ const LoginForm: React.FC = () => {
       }
     } catch (error) {
       setError((error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -113,8 +118,15 @@ const LoginForm: React.FC = () => {
             </Button>
           </div>
         )}
-        <Button type="submit" className="w-full">
-          Log In
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Logging in
+            </>
+          ) : (
+            "Log In"
+          )}
         </Button>
       </form>
     </Form>
