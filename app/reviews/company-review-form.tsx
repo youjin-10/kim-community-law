@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const reviewSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -27,6 +29,7 @@ type ReviewFormData = z.infer<typeof reviewSchema>;
 
 export default function CompanyReviewForm() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { control, handleSubmit, formState: { errors } } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
@@ -39,29 +42,36 @@ export default function CompanyReviewForm() {
   });
 
   const onSubmit = async (data: ReviewFormData) => {
-    const response = await fetch("/api/reviews/company", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        company_name: data.companyName,
-        overall_rating: data.overallRating,
-        work_life_balance: data.workLifeBalance,
-        salary_benefits: data.salaryBenefits,
-        career_growth: data.careerGrowth,
-        management: data.management,
-        pros: data.pros,
-        cons: data.cons,
-        additional_comments: data.additionalComments,
-      }),
-    });
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/reviews/company", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_name: data.companyName,
+          overall_rating: data.overallRating,
+          work_life_balance: data.workLifeBalance,
+          salary_benefits: data.salaryBenefits,
+          career_growth: data.careerGrowth,
+          management: data.management,
+          pros: data.pros,
+          cons: data.cons,
+          additional_comments: data.additionalComments,
+        }),
+      });
 
-    if (response.ok) {
-      const result = await response.json();
-      if (result.redirectTo) {
-        router.push(result.redirectTo);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.redirectTo) {
+          router.push(result.redirectTo);
+        }
+      } else {
+        console.error("Failed to submit review");
       }
-    } else {
-      console.error("Failed to submit review");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,7 +148,16 @@ export default function CompanyReviewForm() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">Submit Company Review</Button>
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit Company Review"
+            )}
+          </Button>
         </CardFooter>
       </form>
     </Card>

@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
 const supabase = createClient();
 
@@ -29,6 +30,7 @@ const formSchema = z.object({
 const SignUpForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSignUpComplete, setIsSignUpComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,6 +44,7 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setError(null);
+    setIsLoading(true);
 
     try {
       // 1. Sign up the user
@@ -104,6 +107,8 @@ const SignUpForm: React.FC = () => {
     } catch (error) {
       console.error("Sign up error:", error);
       setError((error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,7 +198,16 @@ const SignUpForm: React.FC = () => {
           )}
         />
         {error && <p className="text-red-500">{error}</p>}
-        <Button type="submit">Sign Up</Button>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing Up
+            </>
+          ) : (
+            "Sign Up"
+          )}
+        </Button>
       </form>
     </Form>
   );

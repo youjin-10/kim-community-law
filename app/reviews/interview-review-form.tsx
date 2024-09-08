@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const interviewReviewSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
@@ -28,6 +30,7 @@ type InterviewReviewFormData = z.infer<typeof interviewReviewSchema>;
 
 export default function InterviewReviewForm() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { control, handleSubmit, formState: { errors } } = useForm<InterviewReviewFormData>({
     resolver: zodResolver(interviewReviewSchema),
     defaultValues: {
@@ -38,29 +41,36 @@ export default function InterviewReviewForm() {
   });
 
   const onSubmit = async (data: InterviewReviewFormData) => {
-    const response = await fetch("/api/reviews/interview", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        company_name: data.companyName,
-        position: data.position,
-        interview_date: data.interviewDate,
-        interview_difficulty: data.interviewDifficulty,
-        interview_experience: data.interviewExperience,
-        interview_outcome: data.interviewOutcome,
-        interview_process: data.interviewProcess,
-        interview_questions: data.interviewQuestions,
-        advice: data.advice,
-      }),
-    });
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/reviews/interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_name: data.companyName,
+          position: data.position,
+          interview_date: data.interviewDate,
+          interview_difficulty: data.interviewDifficulty,
+          interview_experience: data.interviewExperience,
+          interview_outcome: data.interviewOutcome,
+          interview_process: data.interviewProcess,
+          interview_questions: data.interviewQuestions,
+          advice: data.advice,
+        }),
+      });
 
-    if (response.ok) {
-      const result = await response.json();
-      if (result.redirectTo) {
-        router.push(result.redirectTo);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.redirectTo) {
+          router.push(result.redirectTo);
+        }
+      } else {
+        console.error("Failed to submit review");
       }
-    } else {
-      console.error("Failed to submit review");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -175,7 +185,16 @@ export default function InterviewReviewForm() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">Submit Interview Review</Button>
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit Interview Review"
+            )}
+          </Button>
         </CardFooter>
       </form>
     </Card>
