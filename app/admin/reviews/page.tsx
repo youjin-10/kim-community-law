@@ -16,7 +16,7 @@ export default async function AdminReviewsPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6">Admin Review Management</h1>
+      <h1 className="text-2xl font-bold mb-6">후기 관리 어드민</h1>
       <AdminReviewList
         companyReviews={companyReviews}
         interviewReviews={interviewReviews}

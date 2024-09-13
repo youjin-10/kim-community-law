@@ -115,23 +115,21 @@ const SignUpForm: React.FC = () => {
   if (isSignUpComplete) {
     return (
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Sign Up Successful!</h2>
+        <h2 className="text-2xl font-bold mb-4">회원가입 성공!</h2>
         <p className="mb-4">
-          Thank you for signing up. We've sent a confirmation email to{" "}
-          <strong>{form.getValues("email")}</strong>.
+          회원가입해 주셔서 감사합니다.{" "}
+          <strong>{form.getValues("email")}</strong>로 확인 이메일을 보냈습니다.
         </p>
         <p className="mb-4">
-          Please check your email and click on the confirmation link to activate
-          your account.
+          이메일을 확인하시고 확인 링크를 클릭하여 계정을 활성화해 주세요.
         </p>
         <p className="mb-4">
-          If you don't see the email in your inbox, please check your spam
-          folder.
+          받은편지함에서 이메일을 찾을 수 없다면 스팸 폴더를 확인해 주세요.
         </p>
-        <p className="mb-4">
-          Once you've confirmed your email, you can proceed to log in.
-        </p>
-        <Button onClick={() => router.push("/login")}>Go to Login Page</Button>
+        <p className="mb-4">이메일 확인이 완료되면 로그인하실 수 있습니다.</p>
+        <Button onClick={() => router.push("/login")}>
+          로그인 페이지로 이동
+        </Button>
       </div>
     );
   }
@@ -144,7 +142,7 @@ const SignUpForm: React.FC = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>이메일</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
               </FormControl>
@@ -157,7 +155,7 @@ const SignUpForm: React.FC = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>비밀번호</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -170,7 +168,7 @@ const SignUpForm: React.FC = () => {
           name="nickname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nickname</FormLabel>
+              <FormLabel>닉네임</FormLabel>
               <FormControl>
                 <Input type="text" {...field} />
               </FormControl>
@@ -183,7 +181,7 @@ const SignUpForm: React.FC = () => {
           name="license"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Lawyer's License (PDF or Image)</FormLabel>
+              <FormLabel>변호사 자격증 (PDF 또는 이미지)</FormLabel>
               <FormControl>
                 <Input
                   type="file"
@@ -202,10 +200,10 @@ const SignUpForm: React.FC = () => {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Signing Up
+              가입 중
             </>
           ) : (
-            "Sign Up"
+            "회원가입"
           )}
         </Button>
       </form>

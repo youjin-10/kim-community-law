@@ -1,10 +1,10 @@
 // app/admin/admin-dashboard.tsx
 
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 interface Lawyer {
   id: string;
@@ -25,12 +25,12 @@ const AdminDashboard: React.FC = () => {
 
   const fetchPendingLawyersCount = async () => {
     const { count, error } = await supabase
-      .from('lawyer_profiles')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pending');
+      .from("lawyer_profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending");
 
     if (error) {
-      console.error('Error fetching pending lawyers count:', error);
+      console.error("Error fetching pending lawyers count:", error);
     } else {
       setPendingLawyersCount(count || 0);
     }
@@ -38,12 +38,16 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-5">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6">관리자 대시보드</h1>
       <div className="mb-5">
         <p className="text-lg">
-          Pending Approvals: <span className="font-semibold">{pendingLawyersCount}</span>
+          Pending Approvals:{" "}
+          <span className="font-semibold">{pendingLawyersCount}</span>
         </p>
-        <Link href="/admin/approve-lawyers" className="text-blue-600 hover:text-blue-800 underline">
+        <Link
+          href="/admin/approve-lawyers"
+          className="text-blue-600 hover:text-blue-800 underline"
+        >
           Go to Approve Lawyers Page
         </Link>
       </div>

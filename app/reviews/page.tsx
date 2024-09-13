@@ -16,19 +16,19 @@ export default async function ReviewsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Reviews</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">리뷰</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
         <Card>
           <CardHeader>
-            <CardTitle>Write a Review</CardTitle>
+            <CardTitle>후기 작성</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Button asChild className="w-full">
-              <Link href="/reviews/company/new">Write a Company Review</Link>
+              <Link href="/reviews/company/new">회사 후기 작성</Link>
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link href="/reviews/interview/new">Write an Interview Review</Link>
+              <Link href="/reviews/interview/new">면접 후기 작성</Link>
             </Button>
           </CardContent>
         </Card>
@@ -36,7 +36,7 @@ export default async function ReviewsPage() {
 
       <div className="space-y-12">
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Company Reviews</h2>
+          <h2 className="text-2xl font-semibold mb-4">회사 후기</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {companyReviews?.map((review) => (
               <Card key={review.id}>
@@ -59,7 +59,7 @@ export default async function ReviewsPage() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Interview Reviews</h2>
+          <h2 className="text-2xl font-semibold mb-4">면접 후기</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {interviewReviews?.map((review) => (
               <Card key={review.id}>
@@ -70,7 +70,7 @@ export default async function ReviewsPage() {
                 <CardContent>
                   <div className="flex items-center mb-2">
                     <StarIcon className="w-5 h-5 text-yellow-400 mr-1" />
-                    <span>Experience: {review.interview_experience}/5</span>
+                    <span>경험: {review.interview_experience}/5</span>
                   </div>
                   <p className="text-sm text-gray-600">
                     {review.interview_process.substring(0, 100)}

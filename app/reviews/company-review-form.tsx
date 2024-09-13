@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,7 +36,11 @@ type ReviewFormData = z.infer<typeof reviewSchema>;
 export default function CompanyReviewForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { control, handleSubmit, formState: { errors } } = useForm<ReviewFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       overallRating: 3,
@@ -75,7 +85,15 @@ export default function CompanyReviewForm() {
     }
   };
 
-  const RatingSlider = ({ control, name, label }: { control: any; name: keyof ReviewFormData; label: string }) => (
+  const RatingSlider = ({
+    control,
+    name,
+    label,
+  }: {
+    control: any;
+    name: keyof ReviewFormData;
+    label: string;
+  }) => (
     <div className="space-y-2">
       <Label>{label}</Label>
       <Controller
@@ -100,28 +118,48 @@ export default function CompanyReviewForm() {
   return (
     <Card className="max-w-2xl mx-auto mt-10">
       <CardHeader>
-        <CardTitle>Submit Company Review</CardTitle>
+        <CardTitle>재직 후기 제출</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="companyName">Company Name</Label>
+            <Label htmlFor="companyName">회사 이름</Label>
             <Controller
               name="companyName"
               control={control}
               render={({ field }) => <Input {...field} />}
             />
-            {errors.companyName && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
+            {errors.companyName && (
+              <p className="text-red-500 text-sm">
+                {errors.companyName.message}
+              </p>
+            )}
           </div>
 
-          <RatingSlider control={control} name="overallRating" label="Overall Rating" />
-          <RatingSlider control={control} name="workLifeBalance" label="Work-Life Balance" />
-          <RatingSlider control={control} name="salaryBenefits" label="Salary & Benefits" />
-          <RatingSlider control={control} name="careerGrowth" label="Career Growth" />
-          <RatingSlider control={control} name="management" label="Management" />
+          <RatingSlider
+            control={control}
+            name="overallRating"
+            label="전체 평점"
+          />
+          <RatingSlider
+            control={control}
+            name="workLifeBalance"
+            label="워라밸"
+          />
+          <RatingSlider
+            control={control}
+            name="salaryBenefits"
+            label="연봉 & 복지"
+          />
+          <RatingSlider
+            control={control}
+            name="careerGrowth"
+            label="커리어 & 성장"
+          />
+          <RatingSlider control={control} name="management" label="임원진" />
 
           <div className="space-y-2">
-            <Label htmlFor="pros">Pros</Label>
+            <Label htmlFor="pros">좋은 점</Label>
             <Controller
               name="pros"
               control={control}
@@ -130,7 +168,7 @@ export default function CompanyReviewForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cons">Cons</Label>
+            <Label htmlFor="cons">아쉬운 점</Label>
             <Controller
               name="cons"
               control={control}
@@ -152,10 +190,10 @@ export default function CompanyReviewForm() {
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Submitting...
+                제출하는 중
               </>
             ) : (
-              "Submit Company Review"
+              "재직 후기 제출"
             )}
           </Button>
         </CardFooter>

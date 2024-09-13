@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div>Please log in to view your dashboard.</div>;
+    return <div>로그인이 필요합니다.</div>;
   }
 
   const { data: companyReviews } = await supabase
@@ -27,10 +27,10 @@ export default async function DashboardPage() {
   return (
     <Card className="max-w-4xl mx-auto mt-10">
       <CardHeader>
-        <CardTitle>Your Dashboard</CardTitle>
+        <CardTitle>내 대시보드</CardTitle>
       </CardHeader>
       <CardContent>
-        <h2 className="text-xl font-semibold mb-4">Your Company Reviews</h2>
+        <h2 className="text-xl font-semibold mb-4">내 재직 후기</h2>
         {companyReviews && companyReviews.length > 0 ? (
           <ul>
             {companyReviews.map((review) => (
@@ -39,21 +39,17 @@ export default async function DashboardPage() {
                 <span className="ml-2">{review.status}</span>
                 {review.status === "rejected" && (
                   <Button variant="link" asChild className="ml-2">
-                    <Link href={`/reviews/revise/${review.id}`}>
-                      Revise
-                    </Link>
+                    <Link href={`/reviews/revise/${review.id}`}>수정</Link>
                   </Button>
                 )}
               </li>
             ))}
           </ul>
         ) : (
-          <p>You haven't submitted any company reviews yet.</p>
+          <p>아직 작성한 재직 후기가 없습니다.</p>
         )}
 
-        <h2 className="text-xl font-semibold mb-4 mt-8">
-          Your Interview Reviews
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 mt-8">내 면접 후기</h2>
         {interviewReviews && interviewReviews.length > 0 ? (
           <ul>
             {interviewReviews.map((review) => (
@@ -64,28 +60,22 @@ export default async function DashboardPage() {
                 <span className="ml-2">{review.status}</span>
                 {review.status === "rejected" && (
                   <Button variant="link" asChild className="ml-2">
-                    <Link href={`/reviews/revise/${review.id}`}>
-                      Revise
-                    </Link>
+                    <Link href={`/reviews/revise/${review.id}`}>수정</Link>
                   </Button>
                 )}
               </li>
             ))}
           </ul>
         ) : (
-          <p>You haven't submitted any interview reviews yet.</p>
+          <p>아직 작성한 면접 후기가 없습니다.</p>
         )}
 
         <div className="mt-8 space-x-4">
           <Button asChild>
-            <Link href="/reviews/company/new">
-              Write Company Review
-            </Link>
+            <Link href="/reviews/company/new">재직 후기 작성</Link>
           </Button>
           <Button asChild variant="secondary">
-            <Link href="/reviews/interview/new">
-              Write Interview Review
-            </Link>
+            <Link href="/reviews/interview/new">면접 후기 작성</Link>
           </Button>
         </div>
       </CardContent>
