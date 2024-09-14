@@ -1,10 +1,25 @@
 import { type NextRequest } from "next/server";
 import { updateSession } from "./utils/supabase/middleware";
 import { adminAuth } from "./utils/admin-auth";
+import { NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/admin")) {
     return adminAuth(request);
+  }
+
+  if (request.nextUrl.pathname.startsWith("/reviews")) {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(
+        new URL("/login?next=/reviews", request.url)
+      );
+    }
   }
 
   // update user's auth session

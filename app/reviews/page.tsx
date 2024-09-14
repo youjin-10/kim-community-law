@@ -1,11 +1,26 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { redirect } from "next/navigation";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StarIcon } from "lucide-react";
 
 export default async function ReviewsPage() {
   const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login?next=/reviews");
+  }
 
   const { data: companyReviews } = await supabase
     .from("company_reviews")
