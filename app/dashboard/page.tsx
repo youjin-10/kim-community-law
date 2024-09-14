@@ -117,14 +117,14 @@ export default async function DashboardPage() {
 }
 
 function getBadgeVariant(
-  status: string
+  status: "approved" | "rejected" | "pending"
 ): "default" | "secondary" | "destructive" {
   switch (status) {
     case "approved":
       return "secondary";
     case "rejected":
       return "destructive";
-    default:
+    case "pending":
       return "default";
   }
 }
