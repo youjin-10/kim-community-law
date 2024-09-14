@@ -14,7 +14,6 @@ export default function Navbar() {
 
   useEffect(() => {
     async function getUser() {
-      console.log("Fetching user...");
       const {
         data: { user },
         error,
@@ -28,10 +27,8 @@ export default function Navbar() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("Auth state changed. Event:", event);
         const currentUser = session?.user;
         setUser(currentUser ?? null);
-        console.log("User after auth state change:", currentUser);
       }
     );
 
@@ -39,8 +36,6 @@ export default function Navbar() {
       authListener.subscription.unsubscribe();
     };
   }, []);
-
-  console.log("Loading state:", loading);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -50,15 +45,6 @@ export default function Navbar() {
   if (loading) {
     return null; // or a loading spinner
   }
-
-  //   useEffect(() => {
-  //     async function checkSession() {
-  //       const { data, error } = await supabase.auth.getSession();
-  //       console.log("Session data:", data);
-  //       console.log("Session error:", error);
-  //     }
-  //     checkSession();
-  //   }, []);
 
   return (
     <nav className="bg-white shadow-md">
