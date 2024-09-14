@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getUserId } from "@/utils/getUserId";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -14,15 +15,17 @@ export default async function DashboardPage() {
     return <div>로그인이 필요합니다.</div>;
   }
 
+  const userId = await getUserId();
+
   const { data: companyReviews } = await supabase
     .from("company_reviews")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
 
   const { data: interviewReviews } = await supabase
     .from("interview_reviews")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
 
   return (
     <Card className="max-w-4xl mx-auto mt-10">
