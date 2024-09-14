@@ -18,16 +18,20 @@ export default async function ReviewsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  console.log("/reviews, user: ", user);
+
   if (!user) {
     redirect("/login?next=/reviews");
   }
 
   const { data: companyReviews } = await supabase
     .from("company_reviews")
-    .select("*");
+    .select("*")
+    .eq("status", "approved");
   const { data: interviewReviews } = await supabase
     .from("interview_reviews")
-    .select("*");
+    .select("*")
+    .eq("status", "approved");
 
   return (
     <div className="container mx-auto px-4 py-8">
