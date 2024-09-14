@@ -1,51 +1,10 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+// import { useEffect, useState } from "react";
+// import { createClient } from "@/utils/supabase/client";
+// import { useRouter } from "next/navigation";
+import AuthButtons from "./auth-buttons";
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const supabase = createClient();
-  const router = useRouter();
-
-  useEffect(() => {
-    async function getUser() {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      console.log("User after fetch:", user);
-      console.log("Error after fetch:", error);
-      setUser(user);
-      setLoading(false);
-    }
-    getUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        const currentUser = session?.user;
-        setUser(currentUser ?? null);
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-  };
-
-  if (loading) {
-    return null; // or a loading spinner
-  }
-
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,27 +23,7 @@ export default function Navbar() {
               {/* Add more menu items as needed */}
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            {user ? (
-              <>
-                <Link href="/dashboard">
-                  <Button variant="ghost">Dashboard</Button>
-                </Link>
-                <Button onClick={handleLogout} variant="ghost">
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost">Login</Button>
-                </Link>
-                <Link href="/signup">
-                  <Button variant="ghost">Sign Up</Button>
-                </Link>
-              </>
-            )}
-          </div>
+          <AuthButtons />
         </div>
       </div>
     </nav>
