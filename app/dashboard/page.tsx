@@ -2,19 +2,11 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { getUserId } from "@/utils/getUserId";
 
 export default async function DashboardPage() {
   const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return <div>로그인이 필요합니다.</div>;
-  }
-
   const userId = await getUserId();
 
   const { data: companyReviews } = await supabase
@@ -35,40 +27,78 @@ export default async function DashboardPage() {
       <CardContent>
         <h2 className="text-xl font-semibold mb-4">내 재직 후기</h2>
         {companyReviews && companyReviews.length > 0 ? (
-          <ul>
-            {companyReviews.map((review) => (
-              <li key={review.id} className="mb-2 flex items-center">
-                <span>{review.company_name}</span>
-                <span className="ml-2">{review.status}</span>
-                {review.status === "rejected" && (
-                  <Button variant="link" asChild className="ml-2">
-                    <Link href={`/reviews/revise/${review.id}`}>수정</Link>
-                  </Button>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2">회사명</th>
+                  <th className="text-left py-2">상태</th>
+                  <th className="text-left py-2">액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                {companyReviews.map((review) => (
+                  <tr key={review.id} className="border-b">
+                    <td className="py-2">{review.company_name}</td>
+                    <td className="py-2">
+                      <Badge variant={getBadgeVariant(review.status)}>
+                        {review.status}
+                      </Badge>
+                    </td>
+                    <td className="py-2">
+                      {review.status === "rejected" && (
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/reviews/revise/${review.id}`}>
+                            수정
+                          </Link>
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p>아직 작성한 재직 후기가 없습니다.</p>
         )}
 
         <h2 className="text-xl font-semibold mb-4 mt-8">내 면접 후기</h2>
         {interviewReviews && interviewReviews.length > 0 ? (
-          <ul>
-            {interviewReviews.map((review) => (
-              <li key={review.id} className="mb-2 flex items-center">
-                <span>
-                  {review.company_name} - {review.position}
-                </span>
-                <span className="ml-2">{review.status}</span>
-                {review.status === "rejected" && (
-                  <Button variant="link" asChild className="ml-2">
-                    <Link href={`/reviews/revise/${review.id}`}>수정</Link>
-                  </Button>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2">회사명</th>
+                  <th className="text-left py-2">직책</th>
+                  <th className="text-left py-2">상태</th>
+                  <th className="text-left py-2">액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                {interviewReviews.map((review) => (
+                  <tr key={review.id} className="border-b">
+                    <td className="py-2">{review.company_name}</td>
+                    <td className="py-2">{review.position}</td>
+                    <td className="py-2">
+                      <Badge variant={getBadgeVariant(review.status)}>
+                        {review.status}
+                      </Badge>
+                    </td>
+                    <td className="py-2">
+                      {review.status === "rejected" && (
+                        <Button variant="outline" size="sm" asChild>
+                          <Link href={`/reviews/revise/${review.id}`}>
+                            수정
+                          </Link>
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p>아직 작성한 면접 후기가 없습니다.</p>
         )}
@@ -84,4 +114,17 @@ export default async function DashboardPage() {
       </CardContent>
     </Card>
   );
+}
+
+function getBadgeVariant(
+  status: string
+): "default" | "secondary" | "destructive" {
+  switch (status) {
+    case "approved":
+      return "secondary";
+    case "rejected":
+      return "destructive";
+    default:
+      return "default";
+  }
 }
