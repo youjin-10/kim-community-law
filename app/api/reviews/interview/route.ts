@@ -1,3 +1,5 @@
+// app/api/reviews/interview/route.ts
+
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 import { getUserId } from "@/utils/getUserId";
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
     }
     return NextResponse.json(
       { error: "An unexpected error occurred" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
