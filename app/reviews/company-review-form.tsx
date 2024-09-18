@@ -54,6 +54,14 @@ const reviewSchema = z
     salary: z.number().min(0).optional(),
     salaryType: z.enum(["연봉", "월급"]).optional(),
     freeOpinion: z.string().optional(),
+    howFound: z.enum([
+      "group chat",
+      "recommendation",
+      "search",
+      "sns (instagram)",
+      "etc",
+    ]),
+    otherHowFound: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -66,8 +74,19 @@ const reviewSchema = z
       message: "Please specify other good things",
       path: ["otherGoodThings"],
     }
+  )
+  .refine(
+    (data) => {
+      if (data.howFound === "etc" && !data.otherHowFound) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Please provide additional comments if you selected 'etc'",
+      path: ["otherHowFound"], // Validation message for "otherHowFound"
+    }
   );
-
 type ReviewFormData = z.infer<typeof reviewSchema>;
 
 export default function CompanyReviewForm() {
@@ -125,6 +144,8 @@ export default function CompanyReviewForm() {
           salary: data.salary,
           salary_type: data.salaryType,
           free_opinion: data.freeOpinion,
+          how_found: data.howFound,
+          other_how_found: data.howFound === "etc" ? data.otherHowFound : null,
         }),
       });
 
@@ -480,6 +501,65 @@ export default function CompanyReviewForm() {
               급여는 선택사항이며, 통계 목적으로만 사용해요.
             </p>
           </div>
+
+          {/* How did you find out about the website? */}
+          <div className="space-y-2">
+            <Label htmlFor="howFound">웹사이트를 어떻게 알게 되셨나요?</Label>
+            <Controller
+              name="howFound"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex flex-col space-y-2">
+                  {[
+                    "group chat",
+                    "recommendation",
+                    "search",
+                    "sns (instagram)",
+                    "etc",
+                  ].map((option) => (
+                    <div key={option} className="flex items-center space-x-2">
+                      <RadioGroupItem value={option} id={option} />
+                      <Label htmlFor={option}>
+                        {option === "group chat" && "단체 채팅"}
+                        {option === "recommendation" && "추천"}
+                        {option === "search" && "검색"}
+                        {option === "sns (instagram)" && "SNS (인스타그램)"}
+                        {option === "etc" && "기타"}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+            {errors.howFound && (
+              <p className="text-red-500 text-sm">{errors.howFound.message}</p>
+            )}
+          </div>
+
+          {/* Conditional text input for "etc" */}
+          {watch("howFound") === "etc" && (
+            <div className="space-y-2">
+              <Label htmlFor="otherHowFound">기타 의견</Label>
+              <Controller
+                name="otherHowFound"
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    {...field}
+                    placeholder="웹사이트를 어떻게 알게 되셨는지 추가 의견을 적어주세요."
+                  />
+                )}
+              />
+              {errors.otherHowFound && (
+                <p className="text-red-500 text-sm">
+                  {errors.otherHowFound.message}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="freeOpinion">자유 의견</Label>
