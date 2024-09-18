@@ -1,3 +1,5 @@
+// utils/getUserId.ts
+
 import { createClient } from "@/utils/supabase/server";
 
 export async function getUserId() {
