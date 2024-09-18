@@ -1,3 +1,5 @@
+// app/reviews/company-review-form.tsx
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -51,6 +53,7 @@ const reviewSchema = z
     yearsOfExperience: z.number().min(0).max(50).optional(),
     salary: z.number().min(0).optional(),
     salaryType: z.enum(["연봉", "월급"]).optional(),
+    freeOpinion: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -121,6 +124,7 @@ export default function CompanyReviewForm() {
           years_of_experience: data.yearsOfExperience,
           salary: data.salary,
           salary_type: data.salaryType,
+          free_opinion: data.freeOpinion,
         }),
       });
 
@@ -198,8 +202,7 @@ export default function CompanyReviewForm() {
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                  defaultValue={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select lawyer type" />
                   </SelectTrigger>
@@ -229,8 +232,7 @@ export default function CompanyReviewForm() {
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                  defaultValue={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="고용 형태 선택" />
                   </SelectTrigger>
@@ -390,8 +392,7 @@ export default function CompanyReviewForm() {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
+                  className="flex flex-col space-y-1">
                   {["없음", "주 1-2회", "주 3-4회", "주 5회"].map((option) => (
                     <div key={option} className="flex items-center space-x-3">
                       <RadioGroupItem value={option} id={option} />
@@ -463,8 +464,7 @@ export default function CompanyReviewForm() {
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                    defaultValue={field.value}>
                     <SelectTrigger className="w-[100px]">
                       <SelectValue placeholder="선택" />
                     </SelectTrigger>
@@ -480,7 +480,26 @@ export default function CompanyReviewForm() {
               급여는 선택사항이며, 통계 목적으로만 사용해요.
             </p>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="freeOpinion">자유 의견</Label>
+            <Controller
+              name="freeOpinion"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  placeholder="커뮤니티 웹사이트에 대한 자유로운 의견을 남겨주세요."
+                />
+              )}
+            />
+            <p className="text-sm text-muted-foreground">
+              커뮤니티 웹사이트에 대한 피드백이나 제안 사항을 자유롭게
+              작성해주세요.
+            </p>
+          </div>
         </CardContent>
+
         <CardFooter>
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
