@@ -1,3 +1,5 @@
+// app/reviews/interview-review-form.tsx
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -25,9 +27,14 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { LawyerTypeSelect } from "./lawyer-type-select";
+import { RatingSlider } from "./rating-slider";
+import { EmploymentTermsSelect } from "./employment-term-select";
 
 const interviewReviewSchema = z.object({
   companyName: z.string().min(1, "회사명은 필수입니다"),
+  lawyerType: z.enum(["Corporate Lawyer", "Inhouse Lawyer"]),
+  employmentTerms: z.enum(["Regular", "Part-time", "etc"]),
   position: z.string().min(1, "직무는 필수입니다"),
   interviewDate: z.string().min(1, "면접 날짜는 필수입니다"),
   interviewDifficulty: z.number().min(1).max(5),
@@ -64,6 +71,8 @@ export default function InterviewReviewForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           company_name: data.companyName,
+          lawyer_type: data.lawyerType,
+          employment_terms: data.employmentTerms,
           position: data.position,
           interview_date: data.interviewDate,
           interview_difficulty: data.interviewDifficulty,
@@ -90,36 +99,6 @@ export default function InterviewReviewForm() {
     }
   };
 
-  const RatingSlider = ({
-    control,
-    name,
-    label,
-  }: {
-    control: any;
-    name: keyof InterviewReviewFormData;
-    label: string;
-  }) => (
-    <div className="space-y-2">
-      <Label>{label}</Label>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <>
-            <Slider
-              min={1}
-              max={5}
-              step={1}
-              value={[value]}
-              onValueChange={(values) => onChange(values[0])}
-            />
-            <div className="text-right">{value}/5</div>
-          </>
-        )}
-      />
-    </div>
-  );
-
   return (
     <Card className="max-w-2xl mx-auto mt-10">
       <CardHeader>
@@ -140,6 +119,18 @@ export default function InterviewReviewForm() {
               </p>
             )}
           </div>
+
+          <LawyerTypeSelect
+            control={control}
+            name="lawyerType"
+            errors={errors}
+          />
+
+          <EmploymentTermsSelect
+            control={control}
+            name="employmentTerms"
+            errors={errors}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="position">직무</Label>
@@ -186,8 +177,7 @@ export default function InterviewReviewForm() {
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                  defaultValue={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="결과 선택" />
                   </SelectTrigger>

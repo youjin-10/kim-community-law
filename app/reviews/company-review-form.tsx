@@ -29,6 +29,9 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LawyerTypeSelect } from "./lawyer-type-select";
+import { RatingSlider } from "./rating-slider";
+import { EmploymentTermsSelect } from "./employment-term-select";
 
 const reviewSchema = z
   .object({
@@ -164,36 +167,6 @@ export default function CompanyReviewForm() {
     }
   };
 
-  const RatingSlider = ({
-    control,
-    name,
-    label,
-  }: {
-    control: any;
-    name: keyof ReviewFormData;
-    label: string;
-  }) => (
-    <div className="space-y-2">
-      <Label>{label}</Label>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <>
-            <Slider
-              min={1}
-              max={5}
-              step={1}
-              value={[value]}
-              onValueChange={(values) => onChange(values[0])}
-            />
-            <div className="text-right">{value}/5</div>
-          </>
-        )}
-      />
-    </div>
-  );
-
   return (
     <Card className="max-w-2xl mx-auto mt-10">
       <CardHeader>
@@ -215,62 +188,17 @@ export default function CompanyReviewForm() {
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="lawyerType">Lawyer Type</Label>
-            <Controller
-              name="lawyerType"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select lawyer type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Corporate Lawyer">
-                      Corporate Lawyer
-                    </SelectItem>
-                    <SelectItem value="Inhouse Lawyer">
-                      Inhouse Lawyer
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.lawyerType && (
-              <p className="text-red-500 text-sm">
-                {errors.lawyerType.message}
-              </p>
-            )}
-          </div>
+          <LawyerTypeSelect
+            control={control}
+            name="lawyerType"
+            errors={errors}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="employmentTerms">고용 형태</Label>
-            <Controller
-              name="employmentTerms"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="고용 형태 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Regular">정직</SelectItem>
-                    <SelectItem value="Part-time">계약직</SelectItem>
-                    <SelectItem value="etc">기타</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.employmentTerms && (
-              <p className="text-red-500 text-sm">
-                {errors.employmentTerms.message}
-              </p>
-            )}
-          </div>
+          <EmploymentTermsSelect
+            control={control}
+            name="employmentTerms"
+            errors={errors}
+          />
 
           <RatingSlider
             control={control}
