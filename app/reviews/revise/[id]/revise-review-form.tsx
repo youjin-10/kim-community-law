@@ -4,17 +4,23 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
-export default function ReviseReviewForm({ review, reviewType }) {
+export default function ReviseReviewForm({
+  review,
+  reviewType,
+}: {
+  review: any;
+  reviewType: any;
+}) {
   const [formData, setFormData] = useState(review);
   const router = useRouter();
   const supabase = createClient();
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const { data, error } = await supabase
       .from(reviewType === "company" ? "company_reviews" : "interview_reviews")
@@ -37,8 +43,7 @@ export default function ReviseReviewForm({ review, reviewType }) {
           <div>
             <label
               htmlFor="company_name"
-              className="block text-sm font-medium text-gray-700"
-            >
+              className="block text-sm font-medium text-gray-700">
               Company Name
             </label>
             <input
@@ -57,8 +62,7 @@ export default function ReviseReviewForm({ review, reviewType }) {
           <div>
             <label
               htmlFor="company_name"
-              className="block text-sm font-medium text-gray-700"
-            >
+              className="block text-sm font-medium text-gray-700">
               Company Name
             </label>
             <input
@@ -73,8 +77,7 @@ export default function ReviseReviewForm({ review, reviewType }) {
           <div>
             <label
               htmlFor="position"
-              className="block text-sm font-medium text-gray-700"
-            >
+              className="block text-sm font-medium text-gray-700">
               Position
             </label>
             <input
@@ -91,8 +94,7 @@ export default function ReviseReviewForm({ review, reviewType }) {
       )}
       <button
         type="submit"
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
+        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Submit Revised Review
       </button>
     </form>
