@@ -6,9 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Suspense } from "react";
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/dashboard";
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-md mx-auto">
@@ -19,10 +16,17 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Suspense>
-            <LoginForm nextUrl={next} />
+            <LoginBody />
           </Suspense>
         </CardContent>
       </Card>
     </div>
   );
+}
+
+function LoginBody() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/dashboard";
+
+  return <LoginForm nextUrl={next} />;
 }
