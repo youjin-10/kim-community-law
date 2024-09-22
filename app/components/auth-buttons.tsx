@@ -45,16 +45,16 @@ export default function AuthButtons() {
             <Button variant="ghost">Dashboard</Button>
           </Link>
           <Button onClick={handleLogout} variant="ghost">
-            Logout
+            로그아웃
           </Button>
         </>
       ) : (
         <>
           <Link href="/login">
-            <Button variant="ghost">Login</Button>
+            <Button variant="ghost">로그인</Button>
           </Link>
           <Link href="/signup">
-            <Button variant="ghost">Sign Up</Button>
+            <Button variant="ghost">회원가입</Button>
           </Link>
         </>
       )}
