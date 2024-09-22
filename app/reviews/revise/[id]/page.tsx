@@ -1,7 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import ReviseReviewForm from "./revise-review-form";
 
-export default async function ReviseReviewPage({ params }) {
+export default async function ReviseReviewPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const supabase = createClient();
   const { id } = params;
 
@@ -31,7 +35,9 @@ export default async function ReviseReviewPage({ params }) {
   const reviewType = companyReview ? "company" : "interview";
 
   if (!review) {
-    return <div>Review not found or you don't have permission to edit it.</div>;
+    return (
+      <div>Review not found or you don&apos;t have permission to edit it.</div>
+    );
   }
 
   return (
