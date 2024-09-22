@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import LoginForm from "./login-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -17,7 +18,9 @@ export default function LoginPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <LoginForm nextUrl={next} />
+          <Suspense>
+            <LoginForm nextUrl={next} />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
