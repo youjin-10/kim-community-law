@@ -23,18 +23,18 @@ export const LawyerTypeSelect: React.FC<LawyerTypeSelectProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={name}>Lawyer Type</Label>
+      <Label htmlFor={name}>직무 유형</Label>
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <SelectTrigger>
-              <SelectValue placeholder="Select lawyer type" />
+              <SelectValue placeholder="직무 유형 선택" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Corporate Lawyer">Corporate Lawyer</SelectItem>
-              <SelectItem value="Inhouse Lawyer">Inhouse Lawyer</SelectItem>
+              <SelectItem value="Corporate Lawyer">송무변</SelectItem>
+              <SelectItem value="Inhouse Lawyer">사내변</SelectItem>
             </SelectContent>
           </Select>
         )}
