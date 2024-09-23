@@ -22,6 +22,7 @@ export async function POST(request: Request) {
       advice,
       lawyer_type,
       employment_terms,
+      salary_negotiation,
     } = await request.json();
 
     const { data, error } = await supabase
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
         advice,
         lawyer_type,
         employment_terms,
+        salary_negotiation,
         status: "pending", // Set the initial status to 'pending'
       })
       .select()

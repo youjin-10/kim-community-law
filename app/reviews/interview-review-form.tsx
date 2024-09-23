@@ -42,6 +42,7 @@ const interviewReviewSchema = z.object({
   interviewProcess: z.string().optional(),
   interviewQuestions: z.string().optional(),
   advice: z.string().optional(),
+  salaryNegotiation: z.string().optional(),
 });
 
 type InterviewReviewFormData = z.infer<typeof interviewReviewSchema>;
@@ -80,6 +81,7 @@ export default function InterviewReviewForm() {
           interview_process: data.interviewProcess,
           interview_questions: data.interviewQuestions,
           advice: data.advice,
+          salary_negotiation: data.salaryNegotiation,
         }),
       });
 
@@ -200,16 +202,52 @@ export default function InterviewReviewForm() {
             <Controller
               name="interviewProcess"
               control={control}
-              render={({ field }) => <Textarea {...field} />}
+              render={({ field }) => (
+                <div className="space-y-1">
+                  <Textarea {...field} />
+                  <p className="text-sm text-muted-foreground">
+                    최대한 자세하게 작성해 주세요. 서류 접수 부터 최종 합격까지
+                    걸린 시간, 면접 횟수, 면접관은 몇 명인지, 면접 시간, 면접
+                    분위기, 팁 등
+                  </p>
+                </div>
+              )}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="interviewQuestions">면접 질문</Label>
+            <Label htmlFor="interviewQuestions">기억에 남는 면접 질문</Label>
             <Controller
               name="interviewQuestions"
               control={control}
-              render={({ field }) => <Textarea {...field} />}
+              render={({ field }) => (
+                <div className="space-y-1">
+                  <Textarea {...field} />
+                  <p className="text-sm text-muted-foreground">
+                    최대한 자세하게 작성해주시면, 다른 변호사님들께서 좋은
+                    직장을 구하시는데, 더 많은 도움이 될거예요. 법리 질문이
+                    있었는지? 있었다면 어떤 내용이었는지, 이력서 바탕
+                    질문이었는지? 변시 성적을 물어보는지 등..
+                  </p>
+                </div>
+              )}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="salaryNegotiation">연봉 협상 과정</Label>
+            <Controller
+              name="salaryNegotiation"
+              control={control}
+              render={({ field }) => (
+                <div className="space-y-1">
+                  <Textarea {...field} />
+                  <p className="text-sm text-gray-700">
+                    면접 과정 중 연봉을 어떻게 협상하셨는지 자유롭게 적어주세요.
+                    협상 전략, 팁, 경험을 공유해 주시면 좋습니다.
+                  </p>
+                </div>
+              )}
             />
           </div>
 
