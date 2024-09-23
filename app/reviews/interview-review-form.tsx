@@ -161,11 +161,15 @@ export default function InterviewReviewForm() {
             control={control}
             name="interviewDifficulty"
             label="면접 난이도"
+            leftHelperText="쉬움"
+            rightHelperText="어려움"
           />
           <RatingSlider
             control={control}
             name="interviewExperience"
             label="면접 경험"
+            leftHelperText="부정적"
+            rightHelperText="긍정적"
           />
 
           <div className="space-y-2">
