@@ -12,7 +12,6 @@ export async function POST(request: Request) {
 
     const {
       company_name,
-      position,
       interview_date,
       interview_difficulty,
       interview_experience,
@@ -30,7 +29,6 @@ export async function POST(request: Request) {
       .insert({
         user_id: userId,
         company_name,
-        position,
         interview_date,
         interview_difficulty,
         interview_experience,
