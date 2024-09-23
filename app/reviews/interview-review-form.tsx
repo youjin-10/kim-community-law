@@ -34,7 +34,6 @@ const interviewReviewSchema = z.object({
   companyName: z.string().min(1, "회사명은 필수입니다"),
   lawyerType: z.enum(["Corporate Lawyer", "Inhouse Lawyer"]),
   employmentTerms: z.enum(["Regular", "Part-time", "etc"]),
-  position: z.string().min(1, "직무는 필수입니다"),
   interviewDate: z.string().min(1, "면접 날짜는 필수입니다"),
   interviewDifficulty: z.number().min(1).max(5),
   interviewExperience: z.number().min(1).max(5),
@@ -72,7 +71,6 @@ export default function InterviewReviewForm() {
           company_name: data.companyName,
           lawyer_type: data.lawyerType,
           employment_terms: data.employmentTerms,
-          position: data.position,
           interview_date: data.interviewDate,
           interview_difficulty: data.interviewDifficulty,
           interview_experience: data.interviewExperience,
@@ -130,18 +128,6 @@ export default function InterviewReviewForm() {
             name="employmentTerms"
             errors={errors}
           />
-
-          <div className="space-y-2">
-            <Label htmlFor="position">직무</Label>
-            <Controller
-              name="position"
-              control={control}
-              render={({ field }) => <Input {...field} />}
-            />
-            {errors.position && (
-              <p className="text-red-500 text-sm">{errors.position.message}</p>
-            )}
-          </div>
 
           <div className="space-y-2">
             <Label htmlFor="interviewDate">면접 날짜</Label>
