@@ -32,6 +32,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { LawyerTypeSelect } from "./lawyer-type-select";
 import { RatingSlider } from "./rating-slider";
 import { EmploymentTermsSelect } from "./employment-term-select";
+import Autocomplete from "./autocomplete";
 
 const reviewSchema = z
   .object({
@@ -99,6 +100,7 @@ export default function CompanyReviewForm() {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
     watch,
   } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
@@ -175,12 +177,22 @@ export default function CompanyReviewForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="companyName">회사 이름</Label>
-            <Controller
+            <Label htmlFor="companyName">직장명</Label>
+            {/* <Controller
               name="companyName"
               control={control}
               render={({ field }) => <Input {...field} />}
+            /> */}
+            <Controller
+              name="companyName"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  onSelect={(value) => setValue("companyName", value)}
+                />
+              )}
             />
+
             {errors.companyName && (
               <p className="text-red-500 text-sm">
                 {errors.companyName.message}
