@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -49,8 +56,8 @@ const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
         if (data.user.email_confirmed_at) {
           router.push(nextUrl);
         } else {
-          setError("Please confirm your email before logging in.");
-          setMessage("Need a new confirmation email?");
+          setError("로그인하기 전에 이메일을 확인해 주세요.");
+          setMessage("확인 이메일을 다시 한 번 보내드릴까요?");
         }
       }
     } catch (error) {
@@ -69,7 +76,9 @@ const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
 
       if (error) throw error;
 
-      setMessage("Confirmation email resent. Please check your inbox.");
+      setMessage(
+        "확인 이메일이 재전송되었습니다. 받은 편지함을 확인해 주세요."
+      );
     } catch (error) {
       setError((error as Error).message);
     }
@@ -96,7 +105,7 @@ const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>비밀번호</FormLabel>
               <FormControl>
                 <Input {...field} type="password" />
               </FormControl>
@@ -112,9 +121,8 @@ const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
               type="button"
               onClick={handleResendConfirmation}
               variant="link"
-              className="mt-2 text-indigo-600 hover:text-indigo-500"
-            >
-              Resend confirmation email
+              className="mt-2 text-indigo-600 hover:text-indigo-500">
+              확인 이메일 다시 보내기
             </Button>
           </div>
         )}
@@ -122,10 +130,10 @@ const LoginForm: React.FC<{ nextUrl: string }> = ({ nextUrl }) => {
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Logging in
+              로그인하는 중...
             </>
           ) : (
-            "Log In"
+            "로그인"
           )}
         </Button>
       </form>
