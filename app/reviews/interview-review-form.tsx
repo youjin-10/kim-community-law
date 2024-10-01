@@ -29,6 +29,7 @@ import { Loader2 } from "lucide-react";
 import { LawyerTypeSelect } from "./lawyer-type-select";
 import { RatingSlider } from "./rating-slider";
 import { EmploymentTermsSelect } from "./employment-term-select";
+import Autocomplete from "./autocomplete";
 
 const interviewReviewSchema = z.object({
   companyName: z.string().min(1, "회사명은 필수입니다"),
@@ -52,6 +53,7 @@ export default function InterviewReviewForm() {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<InterviewReviewFormData>({
     resolver: zodResolver(interviewReviewSchema),
@@ -106,12 +108,22 @@ export default function InterviewReviewForm() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="companyName">회사명</Label>
-            <Controller
+            <Label htmlFor="companyName">직장명</Label>
+            {/* <Controller
               name="companyName"
               control={control}
               render={({ field }) => <Input {...field} />}
+            /> */}
+            <Controller
+              name="companyName"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  onSelect={(value) => setValue("companyName", value)}
+                />
+              )}
             />
+
             {errors.companyName && (
               <p className="text-red-500 text-sm">
                 {errors.companyName.message}
@@ -228,7 +240,7 @@ export default function InterviewReviewForm() {
               render={({ field }) => (
                 <div className="space-y-1">
                   <Textarea {...field} />
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-muted-foreground">
                     면접 과정 중 연봉을 어떻게 협상하셨는지 자유롭게 적어주세요.
                     협상 전략, 팁, 경험을 공유해 주시면 좋습니다.
                   </p>
