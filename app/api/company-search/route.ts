@@ -2,15 +2,23 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
+function createResponse(data: any, message: string, status: number) {
+  return NextResponse.json({ data, message }, { status });
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("query");
 
+  // if (!query) {
+  //   return NextResponse.json(
+  //     { message: "Query parameter is missing" },
+  //     { status: 400 }
+  //   );
+  // }
+
   if (!query) {
-    return NextResponse.json(
-      { message: "Query parameter is missing" },
-      { status: 400 }
-    );
+    return createResponse(null, "Query parameter is missing", 400);
   }
 
   try {
@@ -30,11 +38,13 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    // return NextResponse.json(data);
+    return createResponse(data, "Success", 200);
   } catch (error) {
-    return NextResponse.json(
-      { message: (error as Error).message },
-      { status: 500 }
-    );
+    // return NextResponse.json(
+    //   { message: (error as Error).message },
+    //   { status: 500 }
+    // );
+    return createResponse(null, (error as Error).message, 500);
   }
 }
