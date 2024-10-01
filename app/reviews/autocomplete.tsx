@@ -34,7 +34,12 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onSelect }) => {
       }
 
       const data = await response.json();
-      setResults(data.documents);
+
+      if (!data.documents || data.documents.length === 0) {
+        setResults([]);
+      } else {
+        setResults(data.documents);
+      }
     } catch (error) {
       console.error(error);
     } finally {
