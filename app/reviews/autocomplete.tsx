@@ -33,7 +33,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onSelect }) => {
         throw new Error("Failed to fetch places from API");
       }
 
-      const data = await response.json();
+      const { data, message } = await response.json();
 
       if (!data.documents || data.documents.length === 0) {
         setResults([]);
