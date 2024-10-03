@@ -83,7 +83,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({ onSelect }) => {
         </div>
       )}
       {results.length > 0 && (
-        <Card className="absolute top-full mt-2 bg-white border border-gray-300 rounded shadow-lg w-full max-h-60 overflow-y-auto z-50">
+        <Card className="absolute top-10 mt-2 bg-white border border-gray-300 rounded shadow-lg w-full max-h-60 overflow-y-auto z-50">
           <ul>
             {results.map((place) => (
               <li
