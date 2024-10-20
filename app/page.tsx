@@ -25,8 +25,8 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-[#F8F8FA] rounded-xl px-4 sm:px-9 py-2">
-              <div className="flex text-xs md:text-sm ld:text-base justify-between">
-                <div className="font-[#112D4E] font-semibold">9/00 현재</div>
+              <div className="flex text-xs md:text-sm lg:text-base justify-between">
+                <div className="text-[#112D4E] font-semibold">9/00 현재</div>
                 <div>전체 회원수: 1234명</div>
                 <div>전국 변호사 가입률 60%</div>
               </div>
@@ -55,15 +55,15 @@ export default function Home() {
               <Link className="hover:underline" href="#">
                 채용안내
               </Link>
-              <span className="text-border">|</span>
+              <span className="text-gray-400">|</span>
               <Link className="hover:underline" href="#">
                 파트너십
               </Link>
-              <span className="text-border">|</span>
+              <span className="text-gray-400">|</span>
               <Link className="hover:underline" href="#">
                 강사신청
               </Link>
-              <span className="text-border">|</span>
+              <span className="text-gray-400">|</span>
               <Link className="hover:underline" href="#">
                 문의하기
               </Link>
