@@ -18,14 +18,14 @@ export default function Home() {
                   alt="Company Logo"
                   width={277}
                   height={32}
-                  sizes="(min-width: 1024px) 277px, (min-width: 768px) 210px, 170px"
+                  sizes="(min-width: 1024px) 277px, (min-width: 768px) 245px, 170px"
                   priority
-                  className="w-[170px] md:w-[210px] lg:w-[277px] h-auto"
+                  className="w-[170px] md:w-[245px] lg:w-[277px] h-auto"
                 />
               </div>
             </div>
             <div className="bg-[#F8F8FA] rounded-xl px-4 sm:px-9 py-2">
-              <div className="flex text-xs md:text-sm lg:text-base justify-between">
+              <div className="flex text-xs md:text-sm justify-between">
                 <div className="text-[#112D4E] font-semibold">9/00 현재</div>
                 <div>전체 회원수: 1234명</div>
                 <div>전국 변호사 가입률 60%</div>
